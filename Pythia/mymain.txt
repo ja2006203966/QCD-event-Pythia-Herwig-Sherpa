@@ -41,10 +41,10 @@ void print(std::vector<int> const &input)
 	}
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   // Number of events, generated and listed ones (for jets).
   //int ncut = 50000;
-  int  nEvent = 150000;
+  int  nEvent = 1000;
   int nListJets = nEvent; //this value should <= nEvent
   
   // Select common parameters for SlowJet and FastJet analyses.
@@ -76,7 +76,7 @@ int main() {
   pythia.readString("Random:setSeed = on");
   pythia.readString("Random:seed = 0");
   pythia.readString("Beams:eCM = 14000.");
-pythia.readString("WeakBosonAndParton:qg2gmZq = on");
+pythia.readString(argv[1]);
   pythia.readString("PhaseSpace:pTHatMin = 500.");  //PhaseSpace:pTHatMax   (default = -1.)
   pythia.readString("PhaseSpace:pTHatMax = 550.");
   
@@ -86,7 +86,7 @@ pythia.readString("WeakBosonAndParton:qg2gmZq = on");
 //========================================================================================
   //open file
 ofstream myfile;
-   myfile.open ("/home/ja2006203966/event/Pythia/myeventsqq__69.txt"); 
+   myfile.open (argv[2]); 
 //ofstream myout;
   //myout.open ("myout.txt");//qq for quark ,gg for gluon
 //========================================================================================
