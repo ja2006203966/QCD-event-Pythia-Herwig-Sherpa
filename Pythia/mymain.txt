@@ -77,6 +77,10 @@ int main(int argc, char *argv[]) {
   pythia.readString("Random:seed = 0");
   pythia.readString("Beams:eCM = 14000.");
 pythia.readString(argv[1]);
+  pythia.readString("23:onMode = off");
+  pythia.readString("23:onIfMatch = 12 -12");
+  pythia.readString("23:onIfMatch = 14 -14");
+  pythia.readString("23:onIfMatch = 16 -16");
   pythia.readString("PhaseSpace:pTHatMin = 500.");  //PhaseSpace:pTHatMax   (default = -1.)
   pythia.readString("PhaseSpace:pTHatMax = 550.");
   
