@@ -37,18 +37,31 @@ HepMC::GenEvent::particle_iterator pit;
 // 	     }
 
 // just read parents's id
+
 for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
 // 	    (*p)->print();
-//     std::cout<<(*p)->momentum().perp()<<endl;
+//     std::cout<<(*p)->momentum().perp();
+    
+// HepMC::GenEvent mother = (*p)->parent_event() ;
+    
+//      std::cout<<(*p)->parent_event()->particle_iterator->pdg_id();
+//     std::cout << "\t";
+//     HepMC::GenEvent::particle_iterator p = evt->particles_begin();
+    if ( (*p)->production_vertex() ) {
     HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
     HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
-    
+    HepMC::GenVertex::particle_iterator mother=lp;
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();    
     for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) {
-//         std::cout << "\t";
-//         (*mother)->print();
+        std::cout << "\t";
+        std::cout<<"self id \t"<<(*p)->pdg_id();
+        std::cout<<"mothers id \t"<<(*mother)->pdg_id();
                     }
+        
+    break;
 	}
-
+}
 
 
   return 0;
