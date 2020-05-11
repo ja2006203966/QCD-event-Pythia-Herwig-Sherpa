@@ -1,1 +1,12 @@
-put in pythia8 directory and add the Makefile in pythia8 
+1.Put hepreader.txt(change txt to cc) in pythia8 directory and add the Makefile in pythia8 
+...
+# FASTJET3 and HEPMC2.
+main81 main82 main83 main84 mymain mytest hepreader: $$@.cc $(PREFIX_LIB)/libpythia8.a
+ifeq ($(FASTJET3_USE)$(HEPMC2_USE),truetrue)
+	$(CXX) $< -o $@ -I$(FASTJET3_INCLUDE) -I$(HEPMC2_INCLUDE) $(CXX_COMMON)\
+	 -L$(HEPMC2_LIB) -Wl,-rpath,$(HEPMC2_LIB) -lHepMC\
+	 -L$(FASTJET3_LIB) -Wl,-rpath,$(FASTJET3_LIB) -lfastjet\
+	  $(GZIP_INC) $(GZIP_FLAGS)
+...
+
+2.And change the path in hepreader 
