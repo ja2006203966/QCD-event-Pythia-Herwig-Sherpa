@@ -10,4 +10,4 @@ How to use(you should install Herwig first):
   4.read LHC.in
     $ Herwig read LHC.in
   5. run LHC.run
-    $ Herwig run LHC.run
+    $ Herwig run LHC.run -N 100(number of event you want)
