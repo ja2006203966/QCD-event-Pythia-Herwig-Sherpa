@@ -1,0 +1,13 @@
+How to use(you should install Herwig first):
+  1. clone these file
+    $ git clone ...
+    
+  2.activate the herwig 
+    $ source /path to Herwig/bin/activate
+    $ export PATH=/path to Herwig/bin:$PATH
+  3.go to this file you clone
+    $ cd /.../QCD-event-Pythia-Herwig-Sherpa/Herwig
+  4.read LHC.in
+    $ Herwig read LHC.in
+  5. run LHC.run
+    $ Herwig run LHC.run
