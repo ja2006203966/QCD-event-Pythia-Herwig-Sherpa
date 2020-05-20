@@ -58,7 +58,6 @@ set /Herwig/Cuts/JetKtCut:MaxKT 550.0*GeV
 # MaxKT
 # MinEta
 # MinKT
-(Herwig)(envpy2) [ja2006203966@dell7920 Herwig_test]$ 
 cd /Herwig/Particles/Z0
 set /Herwig/Particles/Z0/Z0->nu_e,nu_ebar;:OnOff On
 set /Herwig/Particles/Z0/Z0->nu_mu,nu_mubar;:OnOff On
