@@ -1,0 +1,66 @@
+// main41.cc is a part of the PYTHIA event generator.
+// Copyright (C) 2019 Torbjorn Sjostrand.
+// PYTHIA is licenced under the GNU GPL v2 or later, see COPYING for details.
+// Please respect the MCnet Guidelines, see GUIDELINES for details.
+
+// Author: Mikhail Kirsanov, Mikhail.Kirsanov@cern.ch, based on main01.cc.
+// This program illustrates how HepMC can be interfaced to Pythia8.
+// It studies the charged multiplicity distribution at the LHC.
+// HepMC events are output to the hepmcout41.dat file.
+
+// WARNING: typically one needs 25 MB/100 events at the LHC.
+// Therefore large event samples may be impractical.
+
+#include "HepMC/IO_GenEvent.h"
+#include "HepMC/GenEvent.h"
+#include <math.h>
+#include <algorithm>
+#include <list>
+
+using namespace HepMC;
+
+int main() {
+
+  // specify an input file
+HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test.hepmc",std::ios::in);
+// get the first event
+HepMC::GenEvent* evt = ascii_in.read_next_event();
+HepMC::GenEvent::particle_iterator pit;
+	int icount=0;
+	int num_good_events=0;
+// loop until we run out of events
+// for ( HepMC::GenEvent::particle_const_iterator p = HepMC::particles_begin();
+// 	           p != HepMC::particles_end(); ++p ) {
+// 	        (*p)->print();
+// 	     }
+
+// just read parents's id
+
+for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
+// 	    (*p)->print();
+//     std::cout<<(*p)->momentum().perp();
+    
+// HepMC::GenEvent mother = (*p)->parent_event() ;
+    
+//      std::cout<<(*p)->parent_event()->particle_iterator->pdg_id();
+//     std::cout << "\t";
+//     HepMC::GenEvent::particle_iterator p = evt->particles_begin();
+    if ( (*p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
+    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
+    HepMC::GenVertex::particle_iterator mother=lp;
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();    
+    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) {
+        std::cout << "\t";
+        std::cout<<"self id \t"<<(*p)->pdg_id();
+        std::cout<<"mothers id \t"<<(*mother)->pdg_id();
+                    }
+        
+    break;
+	}
+}
+
+
+  return 0;
+}
