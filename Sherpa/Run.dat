@@ -8,6 +8,7 @@
 
   % tags for process setup
   NJET:=1; LJET:=2,3,4; QCUT:=20.;
+  PARTICLE_CONTAINER 98 lightflavs 1 -1 3 -3 2 -2; %define set of light quark
 
   % me generator settings
   ME_SIGNAL_GENERATOR Comix Amegic LOOPGEN;
@@ -25,12 +26,15 @@
 }(run)
 
 (processes){
-  Process  94 21 -> 23 94{NJET};
-  Decay 23 -> 91 91;
+  Process  94 21 -> 23 98{NJET}; % for gluon jet 94 94 -> 23 21{1} for light quark 94 21 -> 23 98{1}
+  Decay 23 -> 91 91; % Z0 decay to nutrino
+  PT 98 500.0,550; %choose the domain of jet pT if you want choose eta domain: Calc(abs(Eta(p[0]))<1.1
+  
  
   End process;
 }(processes)
 
 (selector){
+
  
 }(selector)
