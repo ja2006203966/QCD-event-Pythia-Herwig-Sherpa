@@ -1,13 +1,18 @@
 How to use(you should install Herwig first):
-  1. clone these file
+  1. Clone these file
     $ git clone ...
     
-  2.activate the herwig 
+  2. Activate the herwig 
     $ source /path to Herwig/bin/activate
     $ export PATH=/path to Herwig/bin:$PATH
   3.go to this file you clone
     $ cd /.../QCD-event-Pythia-Herwig-Sherpa/Herwig
-  4.read LHC.in
+    
+  4. Change the LHC.in line 173: "set /Herwig/Analysis/HepMCFile:Filename /home/ja2006203966/event/HerwigLHC.hepmc" 
+  to the hepmc2 output path you want.
+  
+  5. Read LHC.in
     $ Herwig read LHC.in
-  5. run LHC.run
+    
+  6. Run LHC.run
     $ Herwig run LHC.run -N 100(number of event you want)
