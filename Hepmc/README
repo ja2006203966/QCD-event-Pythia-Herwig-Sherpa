@@ -6,5 +6,5 @@ You NEED install the HepMC2 and Fastjet3 before you use this code
 	  $ cd /.../QCD-event-Pythia-Herwig-Sherpa/Hepmc
 	  $ ./configure
 	  
-	3.Change hepreader.cc you need and make
+	3.Change the code in hepreader.cc you need and make
 	  $ make hepreader
