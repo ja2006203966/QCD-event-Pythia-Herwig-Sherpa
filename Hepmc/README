@@ -1,5 +1,5 @@
 You NEED install the HepMC2 and Fastjet3 before you use this code
-(HepMC2: https://docs.google.com/document/d/1Y6_13SWLzotQFTlLgzHnvyVzr9_w5SA-IMQ51CStaVM/edit
+(HepMC2: http://lcgapp.cern.ch/project/simu/HepMC/download/
  Fastjet3: http://fastjet.fr/quickstart.html )
  Install HepMC2:
  	Dowload the hepmc2.XX
