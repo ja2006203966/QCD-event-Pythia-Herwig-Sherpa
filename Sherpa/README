@@ -1,9 +1,13 @@
-Please install Sherpa before you use it https://docs.google.com/document/d/1GEEsM-2HavQ2EUgNfMGFneEUDNehUjE3FqOiGa5pRSQ/edit
+Please install Sherpa before you use it: https://docs.google.com/document/d/1GEEsM-2HavQ2EUgNfMGFneEUDNehUjE3FqOiGa5pRSQ/edit
 
     1.Clone the git and copy the Run.dat file to your Sherpa/bin
     $ git clone ...
     $ cd /.../QCD-event-Pythia-Herwig-Sherpa
     $ cp ./Run.dat /home/yourname/SHERPA-MC-2.2.9 /Sherpa/bin
     
-    2.
+    2.Go th your /Sherpa/bin
+     $ cd /.../Sherpa/bin
+     $  ./Sherpa PATH=/.../Sherpa/bin -e 100
+     
+  See more information: https://drive.google.com/drive/folders/1c171KOhQ3X55oj6fUaHHVsoBSezL2WSW
 
