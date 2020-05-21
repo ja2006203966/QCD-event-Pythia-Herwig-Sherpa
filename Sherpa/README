@@ -5,7 +5,10 @@ Please install Sherpa before you use it: https://docs.google.com/document/d/1GEE
     $ cd /.../QCD-event-Pythia-Herwig-Sherpa
     $ cp ./Run.dat /home/yourname/SHERPA-MC-2.2.9 /Sherpa/bin
     
-    2.Go th your /Sherpa/bin
+    2.Modify the file Run.dat line 20 : "EVT_FILE_PATH=/home/ja2006203966/event/Sherpa/" to the path you want output
+    the hepmc2 file
+    
+    3.Go th your /Sherpa/bin
      $ cd /.../Sherpa/bin
      $  ./Sherpa PATH=/.../Sherpa/bin -e 100
      
