@@ -1,6 +1,43 @@
 You NEED install the HepMC2 and Fastjet3 before you use this code
 (HepMC2: https://docs.google.com/document/d/1Y6_13SWLzotQFTlLgzHnvyVzr9_w5SA-IMQ51CStaVM/edit
  Fastjet3: http://fastjet.fr/quickstart.html )
+ Install HepMC2:
+ 	Dowload the hepmc2.XX
+	$ wget http://lcgapp.cern.ch/project/simu/HepMC/download/HepMC-2.06.09.tar.gz
+
+	Tar the file 
+	$ tar -xzf HepMC-2.06.09.tar
+	
+	Make directory you want install HepMC2
+	$ mkdir /path you want/HepMC2
+
+	Go to the file you tarring 
+	$ cd /.../HepMC-2.06.09
+	
+	Configure the path you want to install
+	$ ./configure --prefix=/path you want/HepMC2 --with-momentum=GEV --with-length=MM
+
+	$ make
+	$ make check
+	$ make install
+
+Install Fastjet3:
+	Dowload and tar the source file
+	$ curl -O http://fastjet.fr/repo/fastjet-3.3.4.tar.gz
+	$ tar zxvf fastjet-3.3.4.tar.gz
+	
+	Go to the file you tarring
+	$ cd fastjet-3.3.4/
+	
+	Configure the path you want to install
+	$ ./configure --prefix=$PWD/../fastjet-install
+	
+	$ make
+	$ make check
+	$ make install
+ 
+ 
+ ===============================================================================
 	1.Clone the file
 	  $ git clone...
 	  
