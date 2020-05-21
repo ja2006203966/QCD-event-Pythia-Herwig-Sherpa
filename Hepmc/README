@@ -1,5 +1,6 @@
 You NEED install the HepMC2 and Fastjet3 before you use this code
-(HepMC2: https://docs.google.com/document/d/1Y6_13SWLzotQFTlLgzHnvyVzr9_w5SA-IMQ51CStaVM/edit)
+(HepMC2: https://docs.google.com/document/d/1Y6_13SWLzotQFTlLgzHnvyVzr9_w5SA-IMQ51CStaVM/edit
+ Fastjet3: http://fastjet.fr/quickstart.html )
 	1.Clone the file
 	  $ git clone...
 	  
