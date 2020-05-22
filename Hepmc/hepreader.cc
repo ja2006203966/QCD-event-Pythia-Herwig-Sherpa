@@ -19,6 +19,83 @@
 
 using namespace HepMC;
 
+int Mother1(HepMC::GenEvent::particle_iterator p){
+     if ( (*p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
+    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
+    HepMC::GenVertex::particle_iterator mother=lp;
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();
+    int x[2]={0,0};
+    int i = 0;
+    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
+         x[i]= (*mother)->barcode();
+        i++;
+        }
+         return x[0];
+         delete x;
+    }
+//     else{return -1;}   
+}
+
+int Mother2(HepMC::GenEvent::particle_iterator p){
+     if ( (*p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
+    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
+    HepMC::GenVertex::particle_iterator mother=lp;
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();
+    int x[2]={0,0};
+    int i = 0;
+    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
+         x[i]= (*mother)->barcode();
+        i++;
+        }
+         return x[1];
+         delete x;
+    }
+//     else{return -1;}   
+}
+
+int Daughter1(HepMC::GenEvent::particle_iterator p){
+     if ( (*p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::children);
+    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::children);
+    HepMC::GenVertex::particle_iterator daughter=lp;
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();
+    int x[2]={0,0};
+    int i = 0;
+    for ( HepMC::GenVertex::particle_iterator daughter=lp; daughter!=up;++daughter) { // particle loop for each event 
+         x[i]= (*daughter)->barcode();
+        i++;
+        }
+         return x[0];
+         delete x;
+    }
+//     else{return -1;}   
+}
+
+int Daughter2(HepMC::GenEvent::particle_iterator p){
+     if ( (*p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::children);
+    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::children);
+    HepMC::GenVertex::particle_iterator daughter=lp;
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();
+    int x[2]={0,0};
+    int i = 0;
+    for ( HepMC::GenVertex::particle_iterator daughter=lp; daughter!=up;++daughter) { // particle loop for each event 
+         x[i]= (*daughter)->barcode();
+        i++;
+        }
+         return x[1];
+         delete x;
+    }
+//     else{return -1;}   
+}
+
+
 int main() {
 
   // specify an input file
@@ -35,16 +112,21 @@ HepMC::GenEvent::particle_iterator pit;
 // 	     }
 
 // just read parents's id
+int nEvent=0;
 
 for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
 // 	    (*p)->print();
-//     std::cout<<(*p)->momentum().perp();
+//     std::cout<<"no.\t"<<(*p)->barcode() <<"\tp4\t"<<(*p)->momentum().perp()<<"\n";
     
 // HepMC::GenEvent mother = (*p)->parent_event() ;
     
-//      std::cout<<(*p)->parent_event()->particle_iterator->pdg_id();
+//      std::cout<<"particle number\t"<<(*p)->barcode()<<"\tparticle id\t"<<(*p)->pdg_id()<<"\n";
+//     std::cout<<"particle number\t"<<(*p)->barcode()<<"\t first particle id\t"<<evt->barcode_to_particle(5)->pdg_id()<<"\n";
+    std::cout<<"particle number\t"<<(*p)->barcode()<<"\t mother1 num\t"<<Mother1(p)<<"\t mother2 num\t"<<Mother2(p)<<
+        "\t daughter1 num\t"<<Daughter1(p)<<"\t daughterr2 num\t"<<Daughter2(p)<<"\n";
 //     std::cout << "\t";
 //     HepMC::GenEvent::particle_iterator p = evt->particles_begin();
+    
     if ( (*p)->production_vertex() ) {
     HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
     HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
@@ -53,12 +135,15 @@ for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->pa
 //     std::cout<<(*mother)->pdg_id();    
     for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) {
         std::cout << "\t";
-        std::cout<<"self id \t"<<(*p)->pdg_id();
-        std::cout<<"mothers id \t"<<(*mother)->pdg_id();
+        std::cout<<"mother num \t"<<(*mother)->barcode()<<"\t";
+        std::cout<<"mother id "<<(*mother)->pdg_id()<<"\n";
                     }
         
-    break;
 	}
+    if (nEvent==100){
+        break;
+    }
+ nEvent++;   
 }
 
 
