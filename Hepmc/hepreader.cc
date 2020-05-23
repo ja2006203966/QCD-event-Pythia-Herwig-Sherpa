@@ -16,14 +16,33 @@
 #include <math.h>
 #include <algorithm>
 #include <list>
-
+#include "fastjet/PseudoJet.hh"
 using namespace HepMC;
 
-int Mother1(HepMC::GenEvent::particle_iterator p){
-     if ( (*p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
-    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
-    HepMC::GenVertex::particle_iterator mother=lp;
+
+int Mother(HepMC::GenParticle* p, int n){
+     if ( (p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
+    HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();
+    int x[10]={0};
+    int i = 0;
+    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
+         x[i]= (*mother)->barcode();
+        i++;
+        }
+         return x[n];
+         delete x;
+    }
+//     else{return -1;}   
+}
+
+
+int Mother1(HepMC::GenParticle* p){
+     if ( (p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
+    HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
 //     std::cout << "\t";
 //     std::cout<<(*mother)->pdg_id();
     int x[2]={0,0};
@@ -38,11 +57,10 @@ int Mother1(HepMC::GenEvent::particle_iterator p){
 //     else{return -1;}   
 }
 
-int Mother2(HepMC::GenEvent::particle_iterator p){
-     if ( (*p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
-    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::parents);
-    HepMC::GenVertex::particle_iterator mother=lp;
+int Mother2(HepMC::GenParticle* p){
+     if ( (p)->production_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
+    HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
 //     std::cout << "\t";
 //     std::cout<<(*mother)->pdg_id();
     int x[2]={0,0};
@@ -57,11 +75,29 @@ int Mother2(HepMC::GenEvent::particle_iterator p){
 //     else{return -1;}   
 }
 
-int Daughter1(HepMC::GenEvent::particle_iterator p){
-     if ( (*p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::children);
-    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::children);
-    HepMC::GenVertex::particle_iterator daughter=lp;
+int Daughter(HepMC::GenParticle* p, int n){
+     if ( (p)->end_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+    HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
+//     std::cout << "\t";
+//     std::cout<<(*mother)->pdg_id();
+    int x[10]={0};
+    int i = 0;
+    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
+         x[i]= (*mother)->barcode();
+        i++;
+        }
+         return x[n];
+         delete x;
+    }
+//     else{return -1;}   
+}
+
+//if ( end_vertex() && end_vertex()->barcode()!=0 )
+int Daughter1(HepMC::GenParticle* p){
+     if ( (p)->end_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+    HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
 //     std::cout << "\t";
 //     std::cout<<(*mother)->pdg_id();
     int x[2]={0,0};
@@ -76,11 +112,10 @@ int Daughter1(HepMC::GenEvent::particle_iterator p){
 //     else{return -1;}   
 }
 
-int Daughter2(HepMC::GenEvent::particle_iterator p){
-     if ( (*p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::children);
-    HepMC::GenVertex::particle_iterator up = (*p)->production_vertex()->particles_end(HepMC::children);
-    HepMC::GenVertex::particle_iterator daughter=lp;
+int Daughter2(HepMC::GenParticle* p){
+     if ( (p)->end_vertex() ) {
+    HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+    HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
 //     std::cout << "\t";
 //     std::cout<<(*mother)->pdg_id();
     int x[2]={0,0};
@@ -94,12 +129,43 @@ int Daughter2(HepMC::GenEvent::particle_iterator p){
     }
 //     else{return -1;}   
 }
+
+
+inline bool IsParton(HepMC::GenParticle* p){
+    return (abs(p->pdg_id())<9||p->pdg_id()==21 );
+}
+
+inline bool IsFinal(HepMC::GenParticle* p){
+    return (!p->end_vertex()&&p->status()==1 );
+}
+
+inline bool IsNeutrino(HepMC::GenParticle* p){
+    return ((abs(p->pdg_id())- 12)*(abs(p->pdg_id())- 14)*(abs(p->pdg_id())- 16) ==0 );
+}
+
+inline bool IsHadron(HepMC::GenParticle* p){
+    int idSave = abs(p->pdg_id());
+    if (idSave <= 100 || (idSave >= 1000000 && idSave <= 9000000)|| idSave >= 9900000){ return false;}
+    if (idSave == 130 || idSave == 310){ return true;}
+    if (idSave%10 == 0 || (idSave/10)%10 == 0 || (idSave/100)%10 == 0){return false;}
+  return true;
+}
+
+inline bool IsPhoton(HepMC::GenParticle* p){
+    return (p->pdg_id()== 22 );
+}
+
 
 
 int main() {
 
+int nEvent=2000;    
+
   // specify an input file
+// HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/HerwigLHC.hepmc",std::ios::in);
+// HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/Sherpa/sherpahep.hepmc2g",std::ios::in);
 HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test.hepmc",std::ios::in);
+
 // get the first event
 HepMC::GenEvent* evt = ascii_in.read_next_event();
 HepMC::GenEvent::particle_iterator pit;
@@ -112,9 +178,14 @@ HepMC::GenEvent::particle_iterator pit;
 // 	     }
 
 // just read parents's id
-int nEvent=0;
-
-for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
+int iEvent=0;
+int i=0;
+// std::cout<<evt;
+while(evt){
+     if(i==10){break;}
+     std::cout<<i<<"-th event\n";
+    
+ for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
 // 	    (*p)->print();
 //     std::cout<<"no.\t"<<(*p)->barcode() <<"\tp4\t"<<(*p)->momentum().perp()<<"\n";
     
@@ -122,8 +193,26 @@ for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->pa
     
 //      std::cout<<"particle number\t"<<(*p)->barcode()<<"\tparticle id\t"<<(*p)->pdg_id()<<"\n";
 //     std::cout<<"particle number\t"<<(*p)->barcode()<<"\t first particle id\t"<<evt->barcode_to_particle(5)->pdg_id()<<"\n";
-    std::cout<<"particle number\t"<<(*p)->barcode()<<"\t mother1 num\t"<<Mother1(p)<<"\t mother2 num\t"<<Mother2(p)<<
-        "\t daughter1 num\t"<<Daughter1(p)<<"\t daughterr2 num\t"<<Daughter2(p)<<"\n";
+  if (IsNeutrino(*p)){
+    std::cout<<"particle number\t"<<(*p)->barcode()<<" particle id\t"<<(*p)->pdg_id()<<"\t mother1 num\t"<<Mother1(*p)<<"\t mother2 num\t"<<Mother2(*p)<<
+        "\t daughter1 num\t"<<Daughter1(*p)<<"\t daughterr2 num\t"<<Daughter2(*p)<<"\n";
+      
+    if (IsParton(*p)){std::cout<<"IsParton\n";}
+    
+    if (IsFinal(*p)){std::cout<<"IsFinal\n";}
+    
+    if (IsHadron(*p)){std::cout<<"IsHadron\n";}
+      std::cout<<"mother1 id "<<evt->barcode_to_particle(Mother1(*p))->pdg_id()<<"\n";
+      
+    
+//     int test[10] = {0};
+//     for (int i: test){
+//         std::cout<<"test"<<i<<"\n";
+//     }
+//     for (int i; i<10;i++){
+//         std::cout<<Mother(p,i)<<"\n";
+//     }
+      
 //     std::cout << "\t";
 //     HepMC::GenEvent::particle_iterator p = evt->particles_begin();
     
@@ -140,10 +229,13 @@ for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->pa
                     }
         
 	}
-    if (nEvent==100){
-        break;
-    }
- nEvent++;   
+  }
+    if (iEvent==nEvent){break;}
+ iEvent++;   
+ }
+i++;
+delete evt;
+evt = ascii_in.read_next_event();
 }
 
 
