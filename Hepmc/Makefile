@@ -13,14 +13,17 @@ LOCAL_LIB=lib
 # FASTJET3 and HEPMC2.
 hepqcd : hepqcd.cc
 	g++ $< -o $@ -I$(FASTJET3)/$(LOCAL_INCLUDE) -I$(HEPMC2)/$(LOCAL_INCLUDE) \
-	 -L$(HEPMC2)/$(LOCAL_LIB) -Wl,-rpath,$(HEPMC2)/$(LOCAL_LIB) -lHepMC\
 	 -L$(FASTJET3)/$(LOCAL_LIB) -Wl,-rpath,$(FASTJET3)/$(LOCAL_LIB) -lfastjet\
 	 -lQCDAwarePlugin -lm -lfastjettools\
+	 -L$(HEPMC2)/$(LOCAL_LIB) -Wl,-rpath,$(HEPMC2)/$(LOCAL_LIB) -lHepMC\
+
+
 ##	  $(GZIP_INC) $(GZIP_FLAGS)
 hepreader : hepreader.cc
 	g++ $< -o $@ -I$(FASTJET3)/$(LOCAL_INCLUDE) -I$(HEPMC2)/$(LOCAL_INCLUDE) \
-	 -L$(HEPMC2)/$(LOCAL_LIB) -Wl,-rpath,$(HEPMC2)/$(LOCAL_LIB) -lHepMC\
 	 -L$(FASTJET3)/$(LOCAL_LIB) -Wl,-rpath,$(FASTJET3)/$(LOCAL_LIB) -lfastjet\
+	 -L$(HEPMC2)/$(LOCAL_LIB) -Wl,-rpath,$(HEPMC2)/$(LOCAL_LIB) -lHepMC\
+
 ##	  $(GZIP_INC) $(GZIP_FLAGS)
 hepZ : hepZ.cc 
 	g++ $< -o hepZ -I$(FASTJET3)/$(LOCAL_INCLUDE) -I$(HEPMC2)/$(LOCAL_INCLUDE) \

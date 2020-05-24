@@ -30,128 +30,115 @@ using namespace HepMC;
 
 int Mother(HepMC::GenParticle* p, int n){
      if ( (p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
-    HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
-//     std::cout << "\t";
-//     std::cout<<(*mother)->pdg_id();
-    int x[10]={0};
-    int i = 0;
-    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
-         x[i]= (*mother)->barcode();
-        i++;
-        }
-         return x[n];
-         delete x;
+         if(n<=(p->production_vertex()->particles_in_size())){
+             HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
+             for(int i=1; i<n; ++i){ lp = ++lp;}
+             return (*lp)->barcode();
+         }
+         if(n>(p->production_vertex()->particles_in_size())){return 0;}
+   
+//     HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
+    
+//     int x[10]={0};
+//     int i = 0;
+//     for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
+//          x[i]= (*mother)->barcode();
+//         i=i+1;
+//         }
+//          return x[n];
+//          delete x;
     }
-//     else{return -1;}   
+    else{return 0;}   
 }
 
 
 int Mother1(HepMC::GenParticle* p){
-     if ( (p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
-    HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
-//     std::cout << "\t";
-//     std::cout<<(*mother)->pdg_id();
-    int x[2]={0,0};
-    int i = 0;
-    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
-         x[i]= (*mother)->barcode();
-        i++;
-        }
-         return x[0];
-         delete x;
+     if ( p->production_vertex() ) {
+         HepMC::GenVertex::particle_iterator lp = p->production_vertex()->particles_begin(HepMC::parents);
+         return (*lp)->barcode();
     }
-//     else{return -1;}   
+    else{return 0;}   
 }
 
 int Mother2(HepMC::GenParticle* p){
-     if ( (p)->production_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
-    HepMC::GenVertex::particle_iterator up = (p)->production_vertex()->particles_end(HepMC::parents);
-//     std::cout << "\t";
-//     std::cout<<(*mother)->pdg_id();
-    int x[2]={0,0};
-    int i = 0;
-    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
-         x[i]= (*mother)->barcode();
-        i++;
-        }
-         return x[1];
-         delete x;
+     if ( p->production_vertex() ) {
+         if(p->production_vertex()->particles_in_size()>=2){
+             HepMC::GenVertex::particle_iterator lp = (p)->production_vertex()->particles_begin(HepMC::parents);
+             lp = ++lp;
+         return (*lp)->barcode();
+         }
+         else{return 0;}
     }
-//     else{return -1;}   
+    else{return 0;}   
 }
 
 int Daughter(HepMC::GenParticle* p, int n){
-     if ( (p)->end_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
-    HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
-//     std::cout << "\t";
-//     std::cout<<(*mother)->pdg_id();
-    int x[10]={0};
-    int i = 0;
-    for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
-         x[i]= (*mother)->barcode();
-        i++;
-        }
-         return x[n];
-         delete x;
+     if ( p->end_vertex() ) {
+         if(n<=(p->end_vertex()->particles_out_size())){
+             HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+             for(int i=1; i<n; ++i){ lp = ++lp;}
+             return (*lp)->barcode();
+         }
+         else{return 0;}
+
     }
-//     else{return -1;}   
+    else{return 0;}   
 }
+
+// int Daughter(HepMC::GenParticle* p, int n){
+//      if ( (p)->end_vertex() ) {
+//     HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+//     HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
+// //     std::cout << "\t";
+// //     std::cout<<(*mother)->pdg_id();
+//     int x[10]={0};
+//     int i = 0;
+//     for ( HepMC::GenVertex::particle_iterator mother=lp; mother!=up;++mother) { // particle loop for each event 
+//          x[i]= (*mother)->barcode();
+//         i++;
+//         }
+//          return x[n];
+// //          delete x;
+//     }
+// //     else{return -1;}   
+// }
 
 //if ( end_vertex() && end_vertex()->barcode()!=0 )
 int Daughter1(HepMC::GenParticle* p){
      if ( (p)->end_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
-    HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
-//     std::cout << "\t";
-//     std::cout<<(*mother)->pdg_id();
-    int x[2]={0,0};
-    int i = 0;
-    for ( HepMC::GenVertex::particle_iterator daughter=lp; daughter!=up;++daughter) { // particle loop for each event 
-         x[i]= (*daughter)->barcode();
-        i++;
-        }
-         return x[0];
-         delete x;
+         HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+         return (*lp)->barcode();
     }
-//     else{return -1;}   
+    else{return 0;}   
 }
 
 int Daughter2(HepMC::GenParticle* p){
      if ( (p)->end_vertex() ) {
-    HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
-    HepMC::GenVertex::particle_iterator up = (p)->end_vertex()->particles_end(HepMC::children);
-//     std::cout << "\t";
-//     std::cout<<(*mother)->pdg_id();
-    int x[2]={0,0};
-    int i = 0;
-    for ( HepMC::GenVertex::particle_iterator daughter=lp; daughter!=up;++daughter) { // particle loop for each event 
-         x[i]= (*daughter)->barcode();
-        i++;
-        }
-         return x[1];
-         delete x;
+         if(p->end_vertex()->particles_out_size()>=2){
+             HepMC::GenVertex::particle_iterator lp = (p)->end_vertex()->particles_begin(HepMC::children);
+             lp = ++lp;
+             return (*lp)->barcode();
+         }
+         else{return 0;}
+       
     }
-//     else{return -1;}   
+    else{return 0;}   
 }
 
 
-inline bool IsParton(HepMC::GenParticle* p){
+bool IsParton(HepMC::GenParticle* p){
     return (abs(p->pdg_id())<9||p->pdg_id()==21 );
 }
 
-inline bool IsFinal(HepMC::GenParticle* p){
+bool IsFinal(HepMC::GenParticle* p){
     return (!p->end_vertex()&&p->status()==1 );
 }
 
-inline bool IsNeutrino(HepMC::GenParticle* p){
+bool IsNeutrino(HepMC::GenParticle* p){
     return ((abs(p->pdg_id())- 12)*(abs(p->pdg_id())- 14)*(abs(p->pdg_id())- 16) ==0 );
 }
 
-inline bool IsHadron(HepMC::GenParticle* p){
+bool IsHadron(HepMC::GenParticle* p){
     int idSave = abs(p->pdg_id());
     if (idSave <= 100 || (idSave >= 1000000 && idSave <= 9000000)|| idSave >= 9900000){ return false;}
     if (idSave == 130 || idSave == 310){ return true;}
@@ -159,7 +146,7 @@ inline bool IsHadron(HepMC::GenParticle* p){
   return true;
 }
 
-inline bool IsPhoton(HepMC::GenParticle* p){
+bool IsPhoton(HepMC::GenParticle* p){
     return (p->pdg_id()== 22 );
 }
 
@@ -180,7 +167,7 @@ int main(int argc, char *argv[]) {
   // specify an input file
 HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test.hepmc",std::ios::in);
 // get the first event
-HepMC::GenEvent* evt = ascii_in.read_next_event();
+// HepMC::GenEvent* evt = ascii_in.read_next_event();
 HepMC::GenEvent::particle_iterator pit;
 using namespace std;
 
@@ -201,8 +188,8 @@ using namespace std;
   fastjet::RecombinationScheme recombScheme = fastjet::E_scheme;
   fastjet::JetDefinition *jetDef = NULL;
   jetDef = new fastjet::JetDefinition( fastjet::antikt_algorithm, Rparam,recombScheme, strategy);
-  int Maxpt = 550; // maxima jet pt
-  int Minpt = 500; // minima jet pt
+  int Maxpt = 20; // maxima jet pt
+  int Minpt = 20; // minima jet pt
 // QCD - aware Fastjet analysis
   double Ghostparam = 1e-20;
   fastjet::contrib::QCDAwarePlugin::AntiKtMeasure *akt = new fastjet::contrib::QCDAwarePlugin::AntiKtMeasure(Rparam);
@@ -219,38 +206,7 @@ using namespace std;
   double pTMax = 5000.;
   int iEvent = 0;
 
- // hard coding to find 2 partons before showering
- 
-    fjInputs.clear();
 
-//====================================HepMC2 loop all event====================================================
-while(evt){ // loop all event
-    
-    std::cout<<iEvent<<"-th event\n";
-//======================================QCD-aware=======================================
-
-  // Fastjet analysis - select algorithm and parameters.
-  double Rparam = 0.4;
-  fastjet::Strategy               strategy = fastjet::Best;
-  fastjet::RecombinationScheme    recombScheme = fastjet::E_scheme;
-  fastjet::JetDefinition         *jetDef = NULL;
-  jetDef = new fastjet::JetDefinition( fastjet::antikt_algorithm, Rparam,
-           recombScheme, strategy);
-
-  // QCD - aware Fastjet analysis
-  double Ghostparam = 1e-20;
-  fastjet::contrib::QCDAwarePlugin::AntiKtMeasure *akt = new fastjet::contrib::QCDAwarePlugin::AntiKtMeasure(Rparam);
-  fastjet::contrib::QCDAwarePlugin::QCDAwarePlugin *qcdawareakt = new fastjet::contrib::QCDAwarePlugin::QCDAwarePlugin(akt);
-
-  // Fastjet input.
-  std::vector <fastjet::PseudoJet> fjInputs, QCDfjInputs;
-
-  // set parameter for jet splitting
-  double dR = 0.2;
-
-  int nEvent = 100;
-  double MassMax = 10000.;
-  double pTMax = 5000.;
 
   // output file with tried event number & cross section
  
@@ -261,6 +217,13 @@ while(evt){ // loop all event
   // settings for using ROOT histograms
  
 
+
+//====================================HepMC2 loop all event====================================================
+// while(evt){ // loop all event
+for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_next_event()){// loop all event
+    
+    std::cout<<iEvent<<"-th event\n";
+
  
     // hard coding to find 2 partons before showering
     
@@ -269,8 +232,6 @@ while(evt){ // loop all event
     //HepMC2 version
     for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
         // if you want Final particle : 
-        
-//==================================================================
       // No neutrinos or DM.
       // 12 for electron neutrino, 14 for muon neutrino, 16 for tauon neutrino, 52 for dark matter with spin 1 / 2
       // Pdgid can be accessed in https://twiki.cern.ch/twiki/bin/view/Main/PdgId
@@ -286,13 +247,16 @@ while(evt){ // loop all event
       fjInputs.push_back(fastjet::PseudoJet( (*p)->momentum().px(),(*p)->momentum().py(), (*p)->momentum().pz(), (*p)->momentum().e() ) );
     }
 //========================================end of Particle(expect neutrino) loop===================================================
-    
-
+   
     // Check that event contains analyzable particles.
     if (fjInputs.size() == 0) {
       cout << "Error: event with no final state particles" << endl;
+//        delete evt;
+// evt = ascii_in.read_next_event();
+      iEvent++;
       continue;
     }
+   
 
     // Run Fastjet algorithm.
     std::vector <fastjet::PseudoJet> inclusiveJets, sortedJets;
@@ -305,6 +269,9 @@ while(evt){ // loop all event
     // need at least 2 jets to finish leading jet and sub-leading jet analysis
     if (sortedJets.size() < 2) {
       cout << "No enough jets found in event " << iEvent << endl;
+//        delete evt;
+// evt = ascii_in.read_next_event();
+      iEvent++;
       continue;
     }
 /* ----------------pythia version -> hepmc2  (Vec4::Vec4(double x = 0., double y = 0., double z = 0., double t = 0.) to  	FourVector (double xin, double yin, double zin, double tin=0) )-------------*/
@@ -321,51 +288,90 @@ while(evt){ // loop all event
     //------------ .pT() -> .per()
     if ((pJ1.perp() < Maxpt) || (pJ2.perp() < Minpt)){
       cout << "Jets too soft in event " << iEvent << endl; 
+//        delete evt;
+// evt = ascii_in.read_next_event();
+      iEvent++;
       continue;
     }
 
     // cut the events where jet eta is too large
     if ((abs(pJ1.eta()) >= 2) || (abs(pJ2.eta()) >= 2)){
       cout << "Jets with too large eta in event " << iEvent << endl;
+//       delete evt;
+// evt = ascii_in.read_next_event();
+      iEvent++;
       continue;
     }
 
     // Qcdaware jet clustering
 
     QCDfjInputs.clear();
+     
+    
 //=================================== particle (pick final parton) loop particle jet====================================================
     // Particle loop to pick final partons
     for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
       // partons only
+       
       if (!IsParton(*p)){ continue;}
+//         std::cout<<iEvent<<"-th event\n check core not dump6\n";
       // no parton child
      // evt->barcode_to_particle(Daughter1(p))
-      if (IsParton(evt->barcode_to_particle(Daughter1(*p))) || IsParton(evt->barcode_to_particle(Daughter2(*p)))){continue;}
+        int d1=Daughter1(*p);
+        int d2=Daughter2(*p);
+         
+        if(d1!=0){
+            
+            if(d2!=0){
+//                 std::cout<<"PID\t"<<evt->barcode_to_particle(d1)->pdg_id()<<"\t"<<evt->barcode_to_particle(d2)->pdg_id()<<" \n";
+                if (IsParton(evt->barcode_to_particle(d1)) || IsParton(evt->barcode_to_particle(d2))){ continue;}
+            }
+         }
+      
+         
       // reject if the parton is from hadron or tau decay
       bool fromHorT = 0;
       int mother ;
         
-      for (int test; test<10; test++){//check all mother's status =2 and if have least one is hadron
-        mother = Mother(*p,test);
-        if (mother=0){continue;}
-          fromHorT = fromHorT || (IsHadron(evt->barcode_to_particle(mother)) && evt->barcode_to_particle(mother)->status() == 2);
-          fromHorT = fromHorT || ((evt->barcode_to_particle(mother)->pdg_id() == 15) && ( evt->barcode_to_particle(mother)->status() == 2));
-        }
         
-      if (fromHorT){continue;} // if above(at least on mother is hadron and status =2) continue
+      for (int test=1; test<15; test++){//check all mother's status =2 and if have least one is hadron
+        mother = Mother(*p,test);
 
+        if (mother==0){continue;}
+        
+//           if(IsHadron(evt->barcode_to_particle(mother)) && evt->barcode_to_particle(mother)->status() == 2){fromHorT=1;}
+//           if((evt->barcode_to_particle(mother)->pdg_id() == 15)&& evt->barcode_to_particle(mother)->status() == 2){fromHorT=1;}
+          
+//           eq1 = IsHadron(evt->barcode_to_particle(mother));
+//           std::cout<<iEvent<<"-th event\n check core not dump10\n";
+//           eq2 = (evt->barcode_to_particle(mother)->status() == 2);
+//           std::cout<<iEvent<<"-th event\n check core not dump11\n";
+//           eq3 = (evt->barcode_to_particle(mother)->pdg_id() == 15);
+//           std::cout<<iEvent<<"-th event\n check core not dump12\n";       
+          fromHorT = (fromHorT ||( IsHadron(evt->barcode_to_particle(mother)) && (evt->barcode_to_particle(mother)->status() == 2)));
+          fromHorT = (fromHorT || ((evt->barcode_to_particle(mother)->pdg_id() == 15) && (evt->barcode_to_particle(mother)->status() == 2)));
+        }
+
+       
+      if (fromHorT){ continue;} // if above(at least on mother is hadron and status =2) continue
+ 
       // put the selected parton in fastjet input vector
       fastjet::PseudoJet FinalParton((*p)->momentum().px(), (*p)->momentum().py(), (*p)->momentum().pz(), (*p)->momentum().e());
       FinalParton.set_user_index((*p)->pdg_id());
-
+   
       QCDfjInputs.push_back(FinalParton);
+        
     }
 //====================================end of particle (pick final parton) loop=================================================================
 
     // if no final partons
     if (fjInputs.size() == 0){
       cout << "Error: no final partons in event " << iEvent << endl;
+//      delete evt;
+// evt = ascii_in.read_next_event();
+      iEvent++;
       continue;
+        
     }
 
     // QCD aware jet clustering
@@ -377,8 +383,13 @@ while(evt){ // loop all event
     // no enough parton jets
     if (QCDSortedJets.size() < 2){
       cout << "No enough parton jets found in event" << iEvent << endl;
+//      delete evt;
+// evt = ascii_in.read_next_event();
+      iEvent++;
       continue;
+ 
     }
+    
 
     // add "ghost" parton jet to the pseudojet list
     // ghostify the parton jet
@@ -402,6 +413,7 @@ while(evt){ // loop all event
       //	   << endl;
       refjInput.push_back(partonjet);
     }
+  
 
     // reclustering
     fastjet::ClusterSequence reClustSeq(refjInput, *jetDef);
@@ -455,8 +467,8 @@ while(evt){ // loop all event
 //     }
   
  
-  delete evt;
-evt = ascii_in.read_next_event();
+//   delete evt;
+// evt = ascii_in.read_next_event();
 iEvent++;
 }
 
