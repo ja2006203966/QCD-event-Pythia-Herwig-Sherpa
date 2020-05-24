@@ -35,7 +35,20 @@ Install Fastjet3:
 	$ make
 	$ make check
 	$ make install
- 
+	
+ Install Fastjet3 contribuit:
+ 	Download source package
+ 	$ wget http://fastjet.hepforge.org/contrib/downloads/fjcontrib-1.044.tar.gz
+	
+	Tar the package and go to directory
+	$ tar -xzf fjcontrib-1.044.tar.gz
+	$ cd /.../fjcontrib-1.044
+	
+	Configure the fastjet-config
+	$ ./configure ----fastjet-config=/.../fastjet-3.3.4/bin/fastjet-config
+	$ make 
+	$ make check
+	$ make install
  
  ===============================================================================
 	1.Clone the file
