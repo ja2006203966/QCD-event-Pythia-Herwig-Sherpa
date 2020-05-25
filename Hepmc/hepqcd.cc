@@ -165,7 +165,9 @@ double DeltaR(double phi1, double phi2, double eta1, double eta2){
 int main(int argc, char *argv[]) {
 
   // specify an input file
-HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test.hepmc",std::ios::in);
+// HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test.hepmc",std::ios::in);
+HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/HerwigLHC.hepmc",std::ios::in);
+// HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/Sherpa/sherpahep.hepmc2g",std::ios::in);//change to argv[0]
 // get the first event
 // HepMC::GenEvent* evt = ascii_in.read_next_event();
 HepMC::GenEvent::particle_iterator pit;
@@ -179,7 +181,7 @@ using namespace std;
 
 // just read parents's id
  ofstream myfile;
-   myfile.open ("/home/ja2006203966/event/HepmctoML.txt"); 
+   myfile.open ("/home/ja2006203966/event/HepmctoML.txt"); //change to argv[1]
 //============================================Fastjet setting================================
 
  // Fastjet analysis - select algorithm and parameters.
@@ -188,8 +190,8 @@ using namespace std;
   fastjet::RecombinationScheme recombScheme = fastjet::E_scheme;
   fastjet::JetDefinition *jetDef = NULL;
   jetDef = new fastjet::JetDefinition( fastjet::antikt_algorithm, Rparam,recombScheme, strategy);
-  int Maxpt = 20; // maxima jet pt
-  int Minpt = 20; // minima jet pt
+  int Maxpt = 20; // maxima first jet pt
+  int Max2pt = 20; // maxima for second jet pt
 // QCD - aware Fastjet analysis
   double Ghostparam = 1e-20;
   fastjet::contrib::QCDAwarePlugin::AntiKtMeasure *akt = new fastjet::contrib::QCDAwarePlugin::AntiKtMeasure(Rparam);
@@ -267,7 +269,7 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     sortedJets    = sorted_by_pt(inclusiveJets);
 
     // need at least 2 jets to finish leading jet and sub-leading jet analysis
-    if (sortedJets.size() < 2) {
+    if (sortedJets.size() < 1) {
       cout << "No enough jets found in event " << iEvent << endl;
 //        delete evt;
 // evt = ascii_in.read_next_event();
@@ -279,14 +281,16 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     Vec4 pJ2(sortedJets[1].px(), sortedJets[1].py(), sortedJets[1].pz(), sortedJets[1].e());
     Vec4 pC = pJ1 + pJ2; */
     HepMC::FourVector pJ1(sortedJets[0].px(), sortedJets[0].py(), sortedJets[0].pz(), sortedJets[0].e());
-    HepMC::FourVector pJ2(sortedJets[1].px(), sortedJets[1].py(), sortedJets[1].pz(), sortedJets[1].e());
-    HepMC::FourVector pC(pJ1.px()+pJ2.px(), pJ1.py()+pJ2.py(),pJ1.pz()+pJ2.pz(), pJ1.pz()+pJ2.pz()) ;
+//     HepMC::FourVector pJ2(sortedJets[1].px(), sortedJets[1].py(), sortedJets[1].pz(), sortedJets[1].e());
+//     HepMC::FourVector pC(pJ1.px()+pJ2.px(), pJ1.py()+pJ2.py(),pJ1.pz()+pJ2.pz(), pJ1.pz()+pJ2.pz()) ;
+    HepMC::FourVector pC(pJ1.px(), pJ1.py(),pJ1.pz(), pJ1.pz()) ;
 //----------------------------------------------------
     double Ystar = (sortedJets[0].rap() - sortedJets[1].rap()) / 2;
 
     // cut events with too soft leading jets and sub leading jets
     //------------ .pT() -> .per()
-    if ((pJ1.perp() < Maxpt) || (pJ2.perp() < Minpt)){
+//     if ((pJ1.perp() < Maxpt) || (pJ2.perp() < Max2pt)){
+     if ((pJ1.perp() < Maxpt) ){
       cout << "Jets too soft in event " << iEvent << endl; 
 //        delete evt;
 // evt = ascii_in.read_next_event();
@@ -295,7 +299,8 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     }
 
     // cut the events where jet eta is too large
-    if ((abs(pJ1.eta()) >= 2) || (abs(pJ2.eta()) >= 2)){
+//     if ((abs(pJ1.eta()) >= 2) || (abs(pJ2.eta()) >= 2)){
+     if ((abs(pJ1.eta()) >= 2) ){
       cout << "Jets with too large eta in event " << iEvent << endl;
 //       delete evt;
 // evt = ascii_in.read_next_event();
@@ -381,7 +386,7 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     QCDSortedJets = sorted_by_pt(QCDclustSeq.inclusive_jets(20.0));
 
     // no enough parton jets
-    if (QCDSortedJets.size() < 2){
+    if (QCDSortedJets.size() < 1){
       cout << "No enough parton jets found in event" << iEvent << endl;
 //      delete evt;
 // evt = ascii_in.read_next_event();
@@ -432,27 +437,33 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
 	  Rmin0 = DeltaR(reSortedJets[0].phi(), con.phi(), reSortedJets[0].eta(), con.eta());
 	  label0 = con.user_index();
 	}
-    for (fastjet::PseudoJet con: reSortedJets[1].constituents())
-      if (con.user_index() != 0)
-	if (DeltaR(reSortedJets[1].phi(), con.phi(), reSortedJets[1].eta(), con.eta()) < Rmin1){
-	  Rmin1 = DeltaR(reSortedJets[1].phi(), con.phi(), reSortedJets[1].eta(), con.eta());
-	  label1 = con.user_index();
-	}
+//     for (fastjet::PseudoJet con: reSortedJets[1].constituents())
+//       if (con.user_index() != 0)
+// 	if (DeltaR(reSortedJets[1].phi(), con.phi(), reSortedJets[1].eta(), con.eta()) < Rmin1){
+// 	  Rmin1 = DeltaR(reSortedJets[1].phi(), con.phi(), reSortedJets[1].eta(), con.eta());
+// 	  label1 = con.user_index();
+// 	}
 
     // Delta R are all larger than dR
-    if ((label0 == 0) || (label1 == 0)){
+//     if ((label0 == 0) || (label1 == 0)){
+     if (label0 == 0){
+        
       
       continue;
     }
     label0 = abs(label0);
-    label1 = abs(label1);
+//     label1 = abs(label1);
 //==================================================record data===============================================
 //      if ((label0 <= 8) && (label1 <= 8)){
-//       myfile<<"\n"<<sortedJets[i].e()<<"\t"<<sortedJets[i].pt()<<"\t"<<sortedJets[i].eta()<<"\t"<<sortedJets[i].phi()<<"\t"<<constituents.size()<<"\n"<<endl; 
-// 			for (int j=0;j<int(constituents.size()); ++j){  
-// myfile<<constituents[j].e()<<"\t"<<constituents[j].pt()<<"\t"<<constituents[j].eta()<<"\t"<<constituents[j].phi()<<endl;
-//     }
-//      }
+    if (label0 <= 8){
+        vector<fastjet::PseudoJet> constituents = sortedJets[0].constituents();
+      myfile<<"\n"<<reSortedJets[0].e()<<"\t"<<reSortedJets[0].pt()<<"\t"<<reSortedJets[0].eta()<<"\t"<<reSortedJets[0].phi()<<"\t"<<constituents.size()<<"\n"<<endl; 
+			for (int j=0;j<int(constituents.size()); ++j){  
+myfile<<constituents[j].e()<<"\t"<<constituents[j].pt()<<"\t"<<constituents[j].eta()<<"\t"<<constituents[j].phi()<<endl;
+    }
+     }
+    
+    
 //     else if ((label0 == 21) && (label1 == 21)){
 //       HMassCgg->Fill(pC.mCalc());
 //       HDijetType->Fill(1);
@@ -467,10 +478,22 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
 //     }
   
  
+    
+    
+    
+    
+    
+    
+    
+    
 //   delete evt;
 // evt = ascii_in.read_next_event();
 iEvent++;
 }
+    
+    
+    
+    
 
 myfile.close();
   return 0;
