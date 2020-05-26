@@ -163,9 +163,9 @@ double DeltaR(double phi1, double phi2, double eta1, double eta2){
 
 
 int main(int argc, char *argv[]) {
-
+ 
   // specify an input file
-// HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test.hepmc",std::ios::in);
+// HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/test3.hepmc",std::ios::in);
 HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/HerwigLHC.hepmc",std::ios::in);
 // HepMC::IO_GenEvent ascii_in("/home/ja2006203966/event/Sherpa/sherpahep.hepmc2g",std::ios::in);//change to argv[0]
 // get the first event
@@ -180,8 +180,17 @@ using namespace std;
 // 	     }
 
 // just read parents's id
- ofstream myfile;
-   myfile.open ("/home/ja2006203966/event/HepmctoML.txt"); //change to argv[1]
+ ofstream myfile, myfile2, myfile3;
+//    myfile.open ("/home/ja2006203966/event/HepmctoML_Sherpa.txt"); //change to argv[1]
+   myfile.open ("/home/ja2006203966/event/HepmctoML_Herwig.txt"); //change to argv[1]
+//    myfile.open ("/home/ja2006203966/event/HepmctoML_Pythia.txt"); //change to argv[1]
+    
+
+//     myfile2.open ("/home/ja2006203966/event/HepmctoML_Pythia_test.txt");
+    myfile2.open ("/home/ja2006203966/event/HepmctoML_Herwig_test.txt");
+//     myfile2.open ("/home/ja2006203966/event/HepmctoML_Sherpa_test.txt");
+    
+//     myfile3.open("/home/ja2006203966/event/HepmctoML_Herwig_gluon.txt");
 //============================================Fastjet setting================================
 
  // Fastjet analysis - select algorithm and parameters.
@@ -190,24 +199,25 @@ using namespace std;
   fastjet::RecombinationScheme recombScheme = fastjet::E_scheme;
   fastjet::JetDefinition *jetDef = NULL;
   jetDef = new fastjet::JetDefinition( fastjet::antikt_algorithm, Rparam,recombScheme, strategy);
-  int Maxpt = 20; // maxima first jet pt
-  int Max2pt = 20; // maxima for second jet pt
+  int Minpt = 20; // minima first jet pt
 // QCD - aware Fastjet analysis
   double Ghostparam = 1e-20;
   fastjet::contrib::QCDAwarePlugin::AntiKtMeasure *akt = new fastjet::contrib::QCDAwarePlugin::AntiKtMeasure(Rparam);
   fastjet::contrib::QCDAwarePlugin::QCDAwarePlugin *qcdawareakt = new fastjet::contrib::QCDAwarePlugin::QCDAwarePlugin(akt);
 
-  // Fastjet input.
   std::vector <fastjet::PseudoJet> fjInputs, QCDfjInputs;
 
   // set parameter for jet splitting
-  double dR = 0.2;
+  double dR = 0.4; // just set the value wich can be same value as jet radius
   int nEvent = 100;
 
   double MassMax = 10000.;
   double pTMax = 5000.;
   int iEvent = 0;
-
+  int qcount = 0;
+  int hqcount = 0;
+  int gcount = 0;
+  int tcount = 0;
 
 
   // output file with tried event number & cross section
@@ -227,7 +237,6 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     std::cout<<iEvent<<"-th event\n";
 
  
-    // hard coding to find 2 partons before showering
     
     fjInputs.clear();
 //=========================Particle(expect neutrino)  loop  for particle jet===========================
@@ -271,29 +280,20 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     // need at least 2 jets to finish leading jet and sub-leading jet analysis
     if (sortedJets.size() < 1) {
       cout << "No enough jets found in event " << iEvent << endl;
-//        delete evt;
-// evt = ascii_in.read_next_event();
       iEvent++;
       continue;
     }
-/* ----------------pythia version -> hepmc2  (Vec4::Vec4(double x = 0., double y = 0., double z = 0., double t = 0.) to  	FourVector (double xin, double yin, double zin, double tin=0) )-------------*/
-   /* Vec4 pJ1(sortedJets[0].px(), sortedJets[0].py(), sortedJets[0].pz(), sortedJets[0].e());
-    Vec4 pJ2(sortedJets[1].px(), sortedJets[1].py(), sortedJets[1].pz(), sortedJets[1].e());
-    Vec4 pC = pJ1 + pJ2; */
+//------------------------------------ define leading jet four momentum-------------------------------------
+    
     HepMC::FourVector pJ1(sortedJets[0].px(), sortedJets[0].py(), sortedJets[0].pz(), sortedJets[0].e());
-//     HepMC::FourVector pJ2(sortedJets[1].px(), sortedJets[1].py(), sortedJets[1].pz(), sortedJets[1].e());
-//     HepMC::FourVector pC(pJ1.px()+pJ2.px(), pJ1.py()+pJ2.py(),pJ1.pz()+pJ2.pz(), pJ1.pz()+pJ2.pz()) ;
-    HepMC::FourVector pC(pJ1.px(), pJ1.py(),pJ1.pz(), pJ1.pz()) ;
+
 //----------------------------------------------------
-    double Ystar = (sortedJets[0].rap() - sortedJets[1].rap()) / 2;
 
     // cut events with too soft leading jets and sub leading jets
-    //------------ .pT() -> .per()
-//     if ((pJ1.perp() < Maxpt) || (pJ2.perp() < Max2pt)){
-     if ((pJ1.perp() < Maxpt) ){
+    //------------ .pT() -> .perp()
+//     if ((pJ1.perp() < Minpt) || (pJ2.perp() < Min2pt)){
+     if ((pJ1.perp() < Minpt) ){
       cout << "Jets too soft in event " << iEvent << endl; 
-//        delete evt;
-// evt = ascii_in.read_next_event();
       iEvent++;
       continue;
     }
@@ -302,18 +302,17 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
 //     if ((abs(pJ1.eta()) >= 2) || (abs(pJ2.eta()) >= 2)){
      if ((abs(pJ1.eta()) >= 2) ){
       cout << "Jets with too large eta in event " << iEvent << endl;
-//       delete evt;
-// evt = ascii_in.read_next_event();
       iEvent++;
       continue;
     }
 
     // Qcdaware jet clustering
+// Fastjet input.
 
     QCDfjInputs.clear();
      
     
-//=================================== particle (pick final parton) loop particle jet====================================================
+//=================================== Genparticle (pick final parton) loop for parton jet====================================================
     // Particle loop to pick final partons
     for ( HepMC::GenEvent::particle_iterator p = evt->particles_begin();p != evt->particles_end(); ++p ) {
       // partons only
@@ -326,36 +325,38 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
         int d2=Daughter2(*p);
          
         if(d1!=0){
-            
             if(d2!=0){
 //                 std::cout<<"PID\t"<<evt->barcode_to_particle(d1)->pdg_id()<<"\t"<<evt->barcode_to_particle(d2)->pdg_id()<<" \n";
                 if (IsParton(evt->barcode_to_particle(d1)) || IsParton(evt->barcode_to_particle(d2))){ continue;}
             }
+            else{if (IsParton(evt->barcode_to_particle(d1))){ continue;}}
          }
       
          
       // reject if the parton is from hadron or tau decay
       bool fromHorT = 0;
-      int mother ;
+      int mother = 0;
         
+     
         
-      for (int test=1; test<15; test++){//check all mother's status =2 and if have least one is hadron
-        mother = Mother(*p,test);
-
-        if (mother==0){continue;}
-        
-//           if(IsHadron(evt->barcode_to_particle(mother)) && evt->barcode_to_particle(mother)->status() == 2){fromHorT=1;}
-//           if((evt->barcode_to_particle(mother)->pdg_id() == 15)&& evt->barcode_to_particle(mother)->status() == 2){fromHorT=1;}
-          
-//           eq1 = IsHadron(evt->barcode_to_particle(mother));
-//           std::cout<<iEvent<<"-th event\n check core not dump10\n";
-//           eq2 = (evt->barcode_to_particle(mother)->status() == 2);
-//           std::cout<<iEvent<<"-th event\n check core not dump11\n";
-//           eq3 = (evt->barcode_to_particle(mother)->pdg_id() == 15);
-//           std::cout<<iEvent<<"-th event\n check core not dump12\n";       
-          fromHorT = (fromHorT ||( IsHadron(evt->barcode_to_particle(mother)) && (evt->barcode_to_particle(mother)->status() == 2)));
-          fromHorT = (fromHorT || ((evt->barcode_to_particle(mother)->pdg_id() == 15) && (evt->barcode_to_particle(mother)->status() == 2)));
+              for (HepMC::GenVertex::particle_iterator lp = (*p)->production_vertex()->particles_begin(HepMC::parents);
+                  lp!= (*p)->production_vertex()->particles_end(HepMC::parents);lp++){
+                  //check all mother's status =2 and if have least one is hadron
+                  
+                  mother = (*lp)->barcode();
+                  if (mother==0){continue;}
+                  fromHorT = (fromHorT ||( IsHadron(evt->barcode_to_particle(mother)) && (evt->barcode_to_particle(mother)->status() == 2)));
+                  fromHorT = (fromHorT || ((evt->barcode_to_particle(mother)->pdg_id() == 15) && 
+                                           (evt->barcode_to_particle(mother)->status() == 2)));
         }
+        
+//       for (int test=1; test<15; test++){//check all mother's status =2 and if have least one is hadron
+//         mother = Mother(*p,test);
+//         if (mother==0){continue;}
+//           fromHorT = (fromHorT ||( IsHadron(evt->barcode_to_particle(mother)) && (evt->barcode_to_particle(mother)->status() == 2)));
+//           fromHorT = (fromHorT || ((evt->barcode_to_particle(mother)->pdg_id() == 15) && (evt->barcode_to_particle(mother)->status() == 2)));
+//         }
+        
 
        
       if (fromHorT){ continue;} // if above(at least on mother is hadron and status =2) continue
@@ -367,10 +368,10 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
       QCDfjInputs.push_back(FinalParton);
         
     }
-//====================================end of particle (pick final parton) loop=================================================================
+//====================================end of Genparticle (pick final parton) loop=================================================================
 
     // if no final partons
-    if (fjInputs.size() == 0){
+    if (QCDfjInputs.size() == 0){
       cout << "Error: no final partons in event " << iEvent << endl;
 //      delete evt;
 // evt = ascii_in.read_next_event();
@@ -431,12 +432,13 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
     int EventType = -1;
     double Rmin0 = dR, Rmin1 = dR;
     int label0 = 0, label1 = 0;
-    for (fastjet::PseudoJet con: reSortedJets[0].constituents())
+    for (fastjet::PseudoJet con: reSortedJets[0].constituents()){
       if (con.user_index() != 0)
 	if (DeltaR(reSortedJets[0].phi(), con.phi(), reSortedJets[0].eta(), con.eta()) < Rmin0){
 	  Rmin0 = DeltaR(reSortedJets[0].phi(), con.phi(), reSortedJets[0].eta(), con.eta());
 	  label0 = con.user_index();
 	}
+    }
 //     for (fastjet::PseudoJet con: reSortedJets[1].constituents())
 //       if (con.user_index() != 0)
 // 	if (DeltaR(reSortedJets[1].phi(), con.phi(), reSortedJets[1].eta(), con.eta()) < Rmin1){
@@ -448,20 +450,50 @@ for (HepMC::GenEvent* evt = ascii_in.read_next_event(); evt; evt=ascii_in.read_n
 //     if ((label0 == 0) || (label1 == 0)){
      if (label0 == 0){
         
-      
+      iEvent++;
       continue;
     }
     label0 = abs(label0);
 //     label1 = abs(label1);
 //==================================================record data===============================================
 //      if ((label0 <= 8) && (label1 <= 8)){
-    if (label0 <= 8){
+    if (label0 <= 3){ //light quark only
+        qcount++;
+        tcount++;
+        std::cout<<"Quark jet pt =\t"<<reSortedJets[0].pt()<<"\n";
+        myfile2<<"num of quarks/total  gluons/total  heavy quark/total:\t"<<qcount<<"/"<<tcount<<"\t"<<gcount<<"/"<<tcount<<"\t"
+             <<hqcount<<"/"<<tcount<<"\n"<<endl;
         vector<fastjet::PseudoJet> constituents = sortedJets[0].constituents();
       myfile<<"\n"<<reSortedJets[0].e()<<"\t"<<reSortedJets[0].pt()<<"\t"<<reSortedJets[0].eta()<<"\t"<<reSortedJets[0].phi()<<"\t"<<constituents.size()<<"\n"<<endl; 
 			for (int j=0;j<int(constituents.size()); ++j){  
 myfile<<constituents[j].e()<<"\t"<<constituents[j].pt()<<"\t"<<constituents[j].eta()<<"\t"<<constituents[j].phi()<<endl;
     }
      }
+    if (label0==21){
+        gcount++;
+        tcount++;
+        std::cout<<"Gluon jet pt =\t"<<reSortedJets[0].pt()<<"\n";
+      
+         myfile2<<"num of quarks/total  gluons/total  heavy quark/total:\t"<<qcount<<"/"<<tcount<<"\t"<<gcount<<"/"<<tcount<<"\t"
+             <<hqcount<<"/"<<tcount<<"\n"<<endl;
+        
+//         vector<fastjet::PseudoJet> constituents = sortedJets[0].constituents();
+//         myfile3<<"\n"<<reSortedJets[0].e()<<"\t"<<reSortedJets[0].pt()<<"\t"<<reSortedJets[0].eta()<<"\t"<<reSortedJets[0].phi()<<"\t"<<constituents.size()<<"\n"<<endl; 
+// 			for (int j=0;j<int(constituents.size()); ++j){  
+// myfile<<constituents[j].e()<<"\t"<<constituents[j].pt()<<"\t"<<constituents[j].eta()<<"\t"<<constituents[j].phi()<<endl;
+//         }
+    }
+    
+     if (label0 <= 6&&label0>3){ //light quark only
+        hqcount++;
+        tcount++;
+        std::cout<<"Heavy Quark jet pt =\t"<<reSortedJets[0].pt()<<"\n";
+         myfile2<<"num of quarks/total  gluons/total  heavy quark/total:\t"<<qcount<<"/"<<tcount<<"\t"<<gcount<<"/"<<tcount<<"\t"
+             <<hqcount<<"/"<<tcount<<"\n"<<endl;
+       
+    
+     }
+    
     
     
 //     else if ((label0 == 21) && (label1 == 21)){
@@ -496,5 +528,7 @@ iEvent++;
     
 
 myfile.close();
+myfile2.close();
+// myfile3.close();    
   return 0;
 }
