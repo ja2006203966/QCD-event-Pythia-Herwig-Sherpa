@@ -44,12 +44,21 @@ cd /Herwig/MatrixElements
 # Z+jet
 insert SubProcess:MatrixElements[0] MEZJet
 
+cd /Herwig/Cuts/
+#insert Cuts:OneCuts 0 FirstJet
+set /Herwig/Cuts/JetKtCut:MinKT 500.0*GeV
+set /Herwig/Cuts/JetKtCut:MaxKT 550.0*GeV
+
+#set Factory:ScaleChoice Scales/FixedScale
+
+#cd /Herwig/Cuts/
+#insert /Herwig/Cuts/JetCuts:JetRegions 0 FirstJet 
 #set /Herwig/Cuts/FirstJet:PtMin 500.*GeV
 #set /Herwig/Cuts/FirstJet:PtMax 550.*GeV
 #do /Herwig/Cuts/FirstJet:YRange -5.0 5.0
-cd /Herwig/Cuts
-set /Herwig/Cuts/JetKtCut:MinKT 500.0*GeV
-set /Herwig/Cuts/JetKtCut:MaxKT 550.0*GeV
+#cd /Herwig/Cuts
+#set /Herwig/Cuts/JetKtCut:MinKT 500.0*GeV
+#set /Herwig/Cuts/JetKtCut:MaxKT 550.0*GeV
 #  AddComment
 # Comment
 # DefaultInit
@@ -58,6 +67,7 @@ set /Herwig/Cuts/JetKtCut:MaxKT 550.0*GeV
 # MaxKT
 # MinEta
 # MinKT
+
 cd /Herwig/Particles/Z0
 set /Herwig/Particles/Z0/Z0->nu_e,nu_ebar;:OnOff On
 set /Herwig/Particles/Z0/Z0->nu_mu,nu_mubar;:OnOff On
@@ -166,7 +176,7 @@ cd /Herwig/Generators
 # insert /Herwig/Generators/EventGenerator:AnalysisHandlers 0 Rivet
 #insert /Herwig/Generators/EventGenerator:AnalysisHandlers 0 /Herwig/Analysis/HepMCFile
 insert EventGenerator:AnalysisHandlers 0 /Herwig/Analysis/HepMCFile
-set /Herwig/Analysis/HepMCFile:PrintEvent 1000
+set /Herwig/Analysis/HepMCFile:PrintEvent 100
 set /Herwig/Analysis/HepMCFile:Format GenEvent
 set /Herwig/Analysis/HepMCFile:Units GeV_mm
 set /Herwig/Analysis/HepMCFile:Filename /home/ja2006203966/event/HerwigLHC.hepmc
