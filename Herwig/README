@@ -3,7 +3,7 @@ How to use(you should install Herwig first):
     $ git clone ...
     
   2. Activate the herwig 
-    $ source /path to Herwig/bin/activate
+    $ source /path to Herwig/bin/activate ##Note it MUST be ABSOLUTE path
     $ export PATH=/path to Herwig/bin:$PATH
   3.go to this file you clone
     $ cd /.../QCD-event-Pythia-Herwig-Sherpa/Herwig
