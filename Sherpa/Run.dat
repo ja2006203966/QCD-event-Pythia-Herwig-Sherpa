@@ -1,6 +1,6 @@
 (run){
   % general setting
-  EVENTS 1M; ERROR 0.99;
+  EVENTS 100; ERROR 0.99;
 
   % scales, tags for scale variations
   FSF:=1.; RSF:=1.; QSF:=1.;
@@ -9,7 +9,7 @@
   % tags for process setup
   NJET:=1; LJET:=2,3,4; QCUT:=20.;
   PARTICLE_CONTAINER 98 lightflavs 1 -1 3 -3 2 -2; %define set of light quark
-
+  
   % me generator settings
   ME_SIGNAL_GENERATOR Comix Amegic LOOPGEN;
   EVENT_GENERATION_MODE Weighted;
@@ -18,23 +18,33 @@
   EVENT_OUTPUT=HepMC_GenEvent[sherpahep]
   EVT_FILE_PATH=/home/ja2006203966/event/Sherpa/
   % exclude tau from lepton container
-  MASSIVE[15] 1;
 
   % collider setup
-  BEAM_1 2212; BEAM_ENERGY_1 = 7000.;
+   BEAM_1 2212; BEAM_ENERGY_1 = 7000.;
   BEAM_2 2212; BEAM_ENERGY_2 = 7000.;
+  
+  PT[98] 525; WIDTH[98] 50;
 }(run)
-
+ 
 (processes){
-  Process  94 21 -> 23 98{NJET}; % for gluon jet 94 94 -> 23 21{1} for light quark 94 21 -> 23 98{1}
+  Process  94 21 -> 23 98{1}; % for gluon jet 94 94 -> 23 21{1} for light quark 94 21 -> 23 98{1}
+%   PT 21 500.0 550.0;
+%  PT 1 500.0 550; %choose the domain of jet pT if you want choose eta domain: Calc(abs(Eta(p[0]))<1.1
+%  PT -1 500.0 550;
+%  PT 2 500.0 550;
+%  PT -2 500.0 550;
+%  PT 3 500.0 550;
+%  PT -3 500.0 550;
   Decay 23 -> 91 91; % Z0 decay to nutrino
-  PT 98 500.0,550; %choose the domain of jet pT if you want choose eta domain: Calc(abs(Eta(p[0]))<1.1
+ 
   
  
   End process;
 }(processes)
 
 (selector){
+   
+"PT" 98 500.0,550 [PT_UP]
 
  
 }(selector)
